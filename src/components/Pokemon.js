@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
+import Modal from "../components/Modal";
 
 const dance = keyframes`
   0%, 100% {
@@ -45,14 +46,19 @@ const CardName = styled.span`
 `;
 
 function Pokemon({ pokemon }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { id, name, weight, height, sprites, types } = pokemon;
   const majorType = types[0].type.name;
   return (
     <>
-      <Card className={majorType}>
+      <Card className={majorType} onClick={() => setIsModalOpen(true)}>
         <CardImg src={sprites.other.dream_world.front_default} />
         <CardName>{name}</CardName>
       </Card>
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {name}
+      </Modal>
     </>
   );
 }

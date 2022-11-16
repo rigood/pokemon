@@ -23,16 +23,20 @@ const PokemonContainer = styled.div`
   margin: 0 auto;
 `;
 
+const Loading = styled.h1`
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+`;
+
 function Home() {
+  const INITIAL_URL = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=12";
   const [pokemonList, setPokemonList] = useState([]);
-  const [currentUrl, setCurrentUrl] = useState(
-    "https://pokeapi.co/api/v2/pokemon?offset=0&limit=12"
-  );
+  const [currentUrl, setCurrentUrl] = useState(INITIAL_URL);
   const [nextUrl, setNextUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const observer = useRef();
-
   const bottomRef = useCallback(
     (node) => {
       if (loading) return;
@@ -58,7 +62,7 @@ function Home() {
     setLoading(false);
   };
 
-  const getPokemonUrlList = async () => {
+  const getPokemonUrl = async () => {
     setLoading(true);
     const data = await (await fetch(currentUrl)).json();
     setNextUrl(data.next);
@@ -66,18 +70,19 @@ function Home() {
   };
 
   useEffect(() => {
-    getPokemonUrlList();
+    getPokemonUrl();
   }, [currentUrl]);
 
   return (
     <AppContainer>
       <Title>Get your pokemon!</Title>
+
       <PokemonContainer>
         {pokemonList.map((pokemon) => {
           return <Pokemon key={pokemon.id} pokemon={pokemon} />;
         })}
       </PokemonContainer>
-      <div>{loading && "Loading..."}</div>
+      <Loading>{loading && "Loading..."}</Loading>
       <div ref={bottomRef}></div>
     </AppContainer>
   );
